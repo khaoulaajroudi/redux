@@ -1,23 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import "./App.css";
+import { AddTask, DeleteTask, DoneTask } from "./JS/Action/ActionType";
 
 function App() {
+  const [text, settext] = useState();
+  const dispatch = useDispatch();
+  const tasks = useSelector((state) => state.todolist);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+      <div className="nav">
+        <h1>Work shop REDUX</h1>
+      </div>
+      <div className="inp">
+        <input
+          placeholder="your task"
+          onChange={(e) => settext(e.target.value)}
+        />
+        <button
+          onClick={() =>
+            dispatch(AddTask({ id: Math.random(), text: text, isDone: false }))
+          }
         >
-          Learn React
-        </a>
-      </header>
+          add
+        </button>
+      </div>
+      {tasks.map((el) => (
+        <div>
+          <h1
+            onClick={() => dispatch(DoneTask(el.id))}
+            className={el.isDone ? "green" : "red"}
+          >     
+            {el.text}
+          </h1>
+          <p>{el.isDone ? "Done" : "NotDone"}</p>
+          <button onClick={() => dispatch(DeleteTask(el.id))}>Delete</button>
+        </div>
+      ))}
     </div>
   );
 }
